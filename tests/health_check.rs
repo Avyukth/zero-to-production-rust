@@ -1,7 +1,13 @@
+async  fn spawn_app(){
+    let server =  zero2production::run().expect("Failed to start server");
+    let _ = tokio::spawn(server);
+}
+
+
 
 #[tokio::test]
 async fn health_check_works() {
-    spawn_app().await.expect("Failed to start app");
+    spawn_app();
     let client = reqwest::Client::new();
     let response = client.get("http://localhost:8080/health_check").send().await.expect("Failed to send request");
     assert!(response.status().is_success());
@@ -9,6 +15,3 @@ async fn health_check_works() {
 }
 
 
-async  fn spawn_app() -> std::io::Result<()>{
-    zero2production::run().await
-}
