@@ -1,9 +1,19 @@
 [package]
 name = "zero2production"
 version = "0.1.0"
-edition = "2021"
+edition = "2023"
+authors = ["Subhrajit Makur <makur_dot_subhrajit@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+path="src/lib.rs"
+
+[[bin]]
+path="src/lib.rs"
+name="zero2production"
+
+
 
 [dependencies]
 actix-web = "4"
