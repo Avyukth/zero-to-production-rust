@@ -19,19 +19,24 @@ jobs:
   fmt:
     name: Rustfmt
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-      - name: Enforce formatting
-        run: cargo fmt -- --check || cargo fmt -- --write-mode=force
-      - name: Commit Changes
+
+      - name: Check for Modified Files
+        id: git-check
+        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
+
+      - name: Push Changes
+        if: steps.git-check.outputs.modified == 'true'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -am "Format code using Rustfmt"
+          git commit -am "Automated changes"
           git push
 
   clippy:
