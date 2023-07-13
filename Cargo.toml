@@ -7,15 +7,12 @@ authors = ["Subhrajit Makur <makur_dot_subhrajit@gmail.com>"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-path="src/lib.rs"
-
-
-
+path = "src/lib.rs"
 
 
 [dependencies]
 actix-web = "4"
-tokio = { version = "1.29.0", features = ["macros", "rt-multi-thread"]  }
+tokio = { version = "1.29.0", features = ["macros", "rt-multi-thread"] }
 
 
 [dev-dependencies]
