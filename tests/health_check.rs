@@ -1,8 +1,6 @@
 use std::net::TcpListener;
 
-
-
-fn spawn_app()-> String{
+fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("failed to bind random port");
     let port = listener.local_addr().unwrap().port();
     let server = zero2production::run(listener).expect("Failed to bind address");
@@ -10,19 +8,30 @@ fn spawn_app()-> String{
     format!("http://localhost:{}", port)
 }
 
-
-
 #[tokio::test]
 async fn health_check_works() {
-    let address:String =  spawn_app();
+    let address: String = spawn_app();
     let client = reqwest::Client::new();
     let response = client
-                                .get(&format!("{}/health_check", &address))
-                                .send()
-                                .await
-                                .expect("Failed to execute request");
+        .get(&format!("{}/health_check", &address))
+        .send()
+        .await
+        .expect("Failed to execute request");
     assert!(response.status().is_success());
     assert_eq!(Some(0), response.content_length());
 }
 
-
+#[tokio::test]
+async fn subscribe_returns_a_200_for_valid_form_data() {
+    let app_address = spawn_app();
+    let client = reqwest::Client::new();
+    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
+    let response = client
+        .post(&format!("{}/subscriptions", &app_address))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .body(body)
+        .send()
+        .await
+        .expect("Failed to execute request.");
+    assert_eq!(200, response.status().as_u16());
+}
