@@ -3,6 +3,6 @@ use zero2production::run;
 
 #[actix_web::main]
 async fn main()->std::io::Result<()>{
-    run()?.await
+    run("127.0.0.1:0")?.await
 }
 
