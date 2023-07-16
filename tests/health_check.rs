@@ -7,13 +7,13 @@ fn spawn_app() -> String {
     let port = listener.local_addr().unwrap().port();
     let server = zero2production::run(listener).expect("Failed to bind address");
     let _ = tokio::spawn(server);
-    format!("http://localhost:{}", port)
+    format!("http://127.0.0.1:{}", port)
 }
 
 #[tokio::test]
 async fn health_check_works() {
     let address: String = spawn_app();
-    let client = reqwest::Client::new();
+    let client = Client::new();
     let response = client
         .get(&format!("{}/health_check", &address))
         .send()
@@ -41,7 +41,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
 #[tokio::test]
 async fn subscribe_returns_a_400_when_data_is_missing() {
     let app_address = spawn_app();
-    let client = reqwest::Client::new();
+    let client = Client::new();
     let test_cases = vec![
         ("name=le%20guin", "missing the email"),
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
