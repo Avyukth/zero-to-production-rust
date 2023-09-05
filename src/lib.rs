@@ -29,6 +29,6 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
 }
 
 pub trait FromRequest: Sized {
-    type Error = Into<actix_web::Error>;
+    type Error = dyn Into<actix_web::Error>;
     async fn from_request(req: &HttpRequest, Payload: &mut Payload) -> Result<Self, Self::Error>;
 }
