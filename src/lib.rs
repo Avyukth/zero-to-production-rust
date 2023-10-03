@@ -1,4 +1,5 @@
 use actix_web::dev::{Payload, Server};
+use actix_web::web::UrlEncoded;
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
 use serde::Deserialize;
 use std::net::TcpListener;
@@ -31,4 +32,18 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
 pub trait FromRequest: Sized {
     type Error = dyn Into<actix_web::Error>;
     async fn from_request(req: &HttpRequest, Payload: &mut Payload) -> Result<Self, Self::Error>;
+}
+
+impl <T> FromRequest for Form<T>
+where 
+    T: DeserializeOwned + 'static,{
+    
+    type Error = actix_web::Error;
+
+    async  fn from_request(req: &HttpRequest, payload: &mut Payload) -> Result<Self, Self::Error>{
+    match UrlEncoded::new(req, payload).await {
+        ok(item) => Ok(Form(item)),
+        Err(e) => Err(error_handler(e))
+        }
+    }
 }
