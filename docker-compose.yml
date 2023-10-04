@@ -1,4 +1,4 @@
-version: "3.8"
+version: 3.8
 
 services:
   postgres:
@@ -9,9 +9,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT}:${DB_EXPOSE_PORT}"
+      - ${POSTGRES_PORT}:${DB_EXPOSE_PORT}
     command: ["postgres", "-N", "${MAX_CONNECTIONS}"]
     volumes:
       - pgdata:/var/lib/postgresql/data
+
 volumes:
   pgdata:
