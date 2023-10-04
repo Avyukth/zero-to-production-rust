@@ -34,16 +34,16 @@ pub trait FromRequest: Sized {
     async fn from_request(req: &HttpRequest, Payload: &mut Payload) -> Result<Self, Self::Error>;
 }
 
-impl <T> FromRequest for Form<T>
-where 
-    T: DeserializeOwned + 'static,{
-    
+impl<T> FromRequest for Form<T>
+where
+    T: DeserializeOwned + 'static,
+{
     type Error = actix_web::Error;
 
-    async  fn from_request(req: &HttpRequest, payload: &mut Payload) -> Result<Self, Self::Error>{
-    match UrlEncoded::new(req, payload).await {
-        ok(item) => Ok(Form(item)),
-        Err(e) => Err(error_handler(e))
+    async fn from_request(req: &HttpRequest, payload: &mut Payload) -> Result<Self, Self::Error> {
+        match UrlEncoded::new(req, payload).await {
+            ok(item) => Ok(Form(item)),
+            Err(e) => Err(error_handler(e)),
         }
     }
 }
